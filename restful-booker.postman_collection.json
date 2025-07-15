@@ -1,0 +1,2776 @@
+{
+	"info": {
+		"_postman_id": "0e22a6f9-d6f5-4fce-b03c-24d7b9155817",
+		"name": "restful-booker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44966473"
+	},
+	"item": [
+		{
+			"name": "Ping",
+			"item": [
+				{
+					"name": "PP-1 ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"connection": true
+						},
+						"protocolVersion": "http1",
+						"tlsDisabledProtocols": [
+							"TLSv1_3"
+						],
+						"tlsPreferServerCiphers": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "close",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NP-1 Запрос неверным методом",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"404\", function () {\r",
+									"    pm.response.to.have.status(404); \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"connection": true
+						},
+						"protocolVersion": "http1",
+						"tlsDisabledProtocols": [
+							"TLSv1_3"
+						],
+						"tlsPreferServerCiphers": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "close",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "PA-1 Авторизация",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"200\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"\r",
+											"pm.test('Token exist', () => {\r",
+											"    pm.expect(json).to.have.property('token').that.is.a('string').and.not.empty;\r",
+											"});\r",
+											"\r",
+											"pm.environment.set('token', json.token);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "NA-1 Неверный пароль",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"401\", function () {\r",
+											"    pm.response.to.have.status(401); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"wrongpassword\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-2 Неверный логин",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"401\", function () {\r",
+											"    pm.response.to.have.status(401); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"username\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-3 Пустое тело",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-4 Отсутствует логин",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/422 Unprocessable Entity\", function () {\r",
+											"    pm.expect([400, 422]).to.include(pm.response.code); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-5 Отсутсвует пароль",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/422 Unprocessable Entity\", function () {\r",
+											"    pm.expect([400, 422]).to.include(pm.response.code); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-6 Пустое поле пароля",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/422 Unprocessable Entity\", function () {\r",
+											"    pm.expect([400, 422]).to.include(pm.response.code); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-7 Непарсибельный JSON",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"wrongpassword\"\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-8 Неверный content type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"415 Unsupported Media Type\", function () {\r",
+											"    pm.response.to.have.status(415); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "text/plain",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-9 Get вместо Post",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"404\", function () {\r",
+											"    pm.response.to.have.status(404); \r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" : \"{{username}}\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NA-10 SQL инъекция в теле запроса",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"401 Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(401); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Token does not exist\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.not.have.property('token'); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Reason is 'Bad credentials'\", function () {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json.reason).to.equal('Bad credentials');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\" :  \"admin' OR '1'='1\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Booking Post",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "PBP-1 Создание бронирования с валидными данными",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"200\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"});\r",
+											"\r",
+											"const res = pm.response.json();\r",
+											"\r",
+											"pm.test('Response has bookingid (number)', function () {\r",
+											"    pm.expect(res).to.have.property('bookingid').that.is.a('number');\r",
+											"});\r",
+											"\r",
+											"pm.test('Response has booking object', function ()  {\r",
+											"    pm.expect(res).to.have.property('booking').that.is.an('object');\r",
+											"});\r",
+											"\r",
+											"const booking = res.booking;\r",
+											"const reqBody = JSON.parse(pm.request.body.raw);\r",
+											"\r",
+											"pm.test('Booking matches request body', function () {\r",
+											"    pm.expect(booking.firstname).to.eql(reqBody.firstname);\r",
+											"    pm.expect(booking.lastname).to.eql(reqBody.lastname);\r",
+											"    pm.expect(booking.totalprice).to.eql(reqBody.totalprice);\r",
+											"    pm.expect(booking.depositpaid).to.eql(reqBody.depositpaid);\r",
+											"    pm.expect(booking.additionalneeds).to.eql(reqBody.additionalneeds);\r",
+											"    pm.expect(booking.bookingdates.checkin).to.eql(reqBody.bookingdates.checkin);\r",
+											"    pm.expect(booking.bookingdates.checkout).to.eql(reqBody.bookingdates.checkout);\r",
+											"});\r",
+											"pm.environment.set('bookingid', res.bookingid);\r",
+											"pm.environment.set('savedBooking', JSON.stringify(res.booking));"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"{{firstname}}\",\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : {{price}},\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{checkin}}\",\r\n        \"checkout\" : \"{{checkout}}\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "NBP-1 Не валидный JSON - отсутствуют обязательные поля",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/422 Unprocessable Entity\", function () {\r",
+											"    pm.expect([400, 422]).to.include(pm.response.code); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    //\"firstname\" : \"{{firstname}}\",\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : {{price}},\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{checkin}}\",\r\n        \"checkout\" : \"{{checkout}}\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBP-2 Не валидные данные",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/422 Unprocessable Entity\", function () {\r",
+											"    pm.expect([400, 422]).to.include(pm.response.code); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : null,\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : {{price}},\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{checkin}}\",\r\n        \"checkout\" : \"{{checkout}}\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBP-3 Некорректный content type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"415 Unsupported Media Type\", function () {\r",
+											"    pm.response.to.have.status(415); \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "text/plain",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"{{firstname}}\",\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : {{price}},\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{checkin}}\",\r\n        \"checkout\" : \"{{checkout}}\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Booking Get",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "PBG-1 Получение всех ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"200\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"});\r",
+											"\r",
+											"pm.test('Body is an array of booking IDs', () => {\r",
+											"    const json = pm.response.json();\r",
+											"\r",
+											"    pm.expect(json).to.be.an('array').that.is.not.empty;\r",
+											"\r",
+											"    json.forEach(item => {\r",
+											"        pm.expect(item).to.be.an('object').that.has.property('bookingid');\r",
+											"        pm.expect(item.bookingid).to.be.a('number');\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-2 Фильтр по firstname",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const ids = pm.response.json();\r",
+											"pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"\r",
+											"const randomId = ids[Math.floor(Math.random() * ids.length)].bookingid;\r",
+											"pm.environment.set('firstnameId', randomId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?firstname={{firstname}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "firstname",
+											"value": "{{firstname}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-2 Фильтр по firstname check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const expected = pm.variables.get('firstname');\r",
+											"pm.test(`Firstname equals ${expected}`, () => {\r",
+											"    pm.expect(pm.response.json().firstname).to.eql(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{firstnameId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{firstnameId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-3 Фильтр по lastname",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => pm.response.to.have.status(200));\r",
+											"\r",
+											"// 2) тело\r",
+											"const ids = pm.response.json();\r",
+											"\r",
+											"// --- если массив НЕ пустой — выполняем полноценные проверки ---\r",
+											"if (Array.isArray(ids) && ids.length) {\r",
+											"\r",
+											"    pm.test('Body is non-empty array of IDs', () => {\r",
+											"        pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"        ids.forEach(i => pm.expect(i).to.have.property('bookingid').that.is.a('number'));\r",
+											"    });\r",
+											"\r",
+											"    // сохраняем случайный ID\r",
+											"    const randomId = ids[Math.floor(Math.random() * ids.length)].bookingid;\r",
+											"    pm.environment.set('lastnameId', randomId);\r",
+											"\r",
+											"// --- иначе просто выводим предупреждение в консоль ---\r",
+											"} else {\r",
+											"    console.warn('⇢ GET /booking?lastname returned an empty array — ID-тесты пропущены');\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?lastname={{lastname}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "lastname",
+											"value": "{{lastname}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-3 Фильтр по lastname check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const expected = pm.variables.get('lastname');\r",
+											"pm.test(`Lastname equals ${expected}`, () => {\r",
+											"    pm.expect(pm.response.json().lastname).to.eql(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{lastnameId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{lastnameId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-4 Фильтр по firstname+lastname",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const ids = pm.response.json();\r",
+											"pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"\r",
+											"const randomId = ids[Math.floor(Math.random() * ids.length)].bookingid;\r",
+											"pm.environment.set('fullnameId', randomId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?firstname={{firstname}}&lastname={{lastname}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "firstname",
+											"value": "{{firstname}}"
+										},
+										{
+											"key": "lastname",
+											"value": "{{lastname}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-4 Фильтр по firstname+lastname check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const expected = pm.variables.get('firstname');\r",
+											"pm.test(`Firstname equals ${expected}`, () => {\r",
+											"    pm.expect(pm.response.json().firstname).to.eql(expected);\r",
+											"});\r",
+											"\r",
+											"const expected1 = pm.variables.get('lastname');\r",
+											"pm.test(`Lastname equals ${expected1}`, () => {\r",
+											"    pm.expect(pm.response.json().lastname).to.eql(expected1);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{fullnameId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{fullnameId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-5 Фильтр по checkin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const ids = pm.response.json();\r",
+											"pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"\r",
+											"const randomId = ids[Math.floor(Math.random() * ids.length)].bookingid;\r",
+											"pm.environment.set('checkinId', randomId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking?checkin={{checkin}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "checkin",
+											"value": "{{checkin}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-5 Фильтр по checkin check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const expected = pm.variables.get('checkin');\r",
+											"pm.test(`Checkin equals ${expected}`, () => {\r",
+											"    pm.expect(pm.response.json().checkin).to.eql(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking/{{checkinId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{checkinId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-6 Фильтр по checkout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const ids = pm.response.json();\r",
+											"pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"\r",
+											"const randomId = ids[Math.floor(Math.random() * ids.length)].bookingid;\r",
+											"pm.environment.set('checkoutId', randomId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking?checkout={{checkout}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "checkout",
+											"value": "{{checkout}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-6 Фильтр по checkout check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const expected = pm.variables.get('checkout');\r",
+											"pm.test(`Checkout equals ${expected}`, () => {\r",
+											"    pm.expect(pm.response.json().checkout).to.eql(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking/{{checkoutId}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{checkoutId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBG-7 Фильтр по checkin+checkout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const ids = pm.response.json();\r",
+											"pm.expect(ids).to.be.an('array');\r",
+											"\r",
+											"pm.test('Array is not empty', () => {\r",
+											"    pm.expect(ids).to.be.an('array').that.is.not.empty;\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking?checkin={{checkin}}&checkout={{checkout}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "checkin",
+											"value": "{{checkin}}"
+										},
+										{
+											"key": "checkout",
+											"value": "{{checkout}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "NBG-1 Запрос с несуществующими значениями",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"200\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"});\r",
+											"\r",
+											"pm.test('Body is a empty array of booking IDs', () => {\r",
+											"    const json = pm.response.json();\r",
+											"    pm.expect(json).to.be.an('array').that.is.empty;\r",
+											"\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?firstname=wrongfirstname",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "firstname",
+											"value": "wrongfirstname"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBG-2 Проверка чувствительности поиска к регистру",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"200\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is ID\", function () {\r",
+											"    pm.expect(pm.response.json()[0].id).to.not.be.null; \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?firstname=JIM",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "firstname",
+											"value": "JIM"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBG-3 Неверный формат даты",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?checkin=06-2018-11",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "checkin",
+											"value": "06-2018-11"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBG-4 checkin > checkout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking?checkin=2019-01-01&checkout=2018-01-01",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "checkin",
+											"value": "2019-01-01"
+										},
+										{
+											"key": "checkout",
+											"value": "2018-01-01"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBG-5 Пустое значение параметра",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?firstname",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "firstname",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBG-6 Неизвестный параметр",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400\", function () {\r",
+											"    pm.response.to.have.status(400); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking?name=name",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "name"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "BoockingId",
+			"item": [
+				{
+					"name": "Get",
+					"item": [
+						{
+							"name": "PBidG-1 GetBooking валидный id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const current = pm.response.json();\r",
+											"const expected = JSON.parse(pm.environment.get('savedBooking'));\r",
+											"\r",
+											"pm.test('Booking exactly matches object from POST response', () => {\r",
+											"    pm.expect(current).to.deep.equal(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidG-1 GetBooking несуществующий id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 404', () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking/33333",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"33333"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidG-2 GetBooking неверный формат id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 400', () => {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/booking/abc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"abc"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Put",
+					"item": [
+						{
+							"name": "PBidP-1 UpdateBooking валидный токен, валидные данные",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => pm.response.to.have.status(200));\r",
+											"\r",
+											"// 2) тело ответа\r",
+											"const resJson  = pm.response.json();\r",
+											"\r",
+											"// 3) что именно сервер вернул: либо {...}, либо { booking: {...} }\r",
+											"const actual   = resJson.hasOwnProperty('booking') ? resJson.booking : resJson;\r",
+											"\r",
+											"// 4) тело, которое Postman реально отправил\r",
+											"const expected = JSON.parse(pm.request.body.raw);\r",
+											"\r",
+											"// 5) глубокое сравнение\r",
+											"pm.test('Booking matches request body', () => {\r",
+											"    pm.expect(actual).to.deep.equal(expected);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\",\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidP-1 UpdateBooking отсутствует токен",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => pm.response.to.have.status(403));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\",\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidP-2 UpdateBooking неверный токен",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => pm.response.to.have.status(403));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token=1",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\",\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidP-3 UpdateBooking несуществующий id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 404', () => pm.response.to.have.status(404));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\",\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/3333",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"3333"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidP-4 UpdateBooking пропущено обязательное поле",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 400', () => pm.response.to.have.status(400));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    //\"firstname\" : \"new{{firstname}}\",\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidP-5 UpdateBooking неверные типы/диапазоны",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 400', () => pm.response.to.have.status(400));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : null,\r\n    \"lastname\" : \"new{{lastname}}\",\r\n    \"totalprice\" : 222,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"1888-08-08\",\r\n        \"checkout\" : \"1999-09-09\"\r\n    },\r\n    \"additionalneeds\" : \"newBreakfast\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Patch",
+					"item": [
+						{
+							"name": "PBidPU-1 PartialUpdateBooking валидный токен, изменить одно поле",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 200', () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// 2) тело ответа\r",
+											"const resp = pm.response.json();\r",
+											"\r",
+											"// 3) JSON-тело, которое Postman действительно отправил («частичный» объект)\r",
+											"const patchBody = JSON.parse(pm.request.body.raw);\r",
+											"\r",
+											"// 4) Обновлённое поле(я) изменились именно так, как мы прислали\r",
+											"Object.keys(patchBody).forEach(key => {\r",
+											"    pm.test(`${key} is updated`, () => {\r",
+											"        pm.expect(resp[key]).to.eql(patchBody[key]);\r",
+											"    });\r",
+											"});\r",
+											"\r",
+											"// 5) Сервер вернул полный объект брони\r",
+											"pm.test('Response contains all booking fields', () => {\r",
+											"    ['firstname', 'lastname', 'totalprice', 'depositpaid', 'bookingdates', 'additionalneeds']\r",
+											"        .forEach(k => pm.expect(resp, `field ${k} missing`).to.have.property(k));\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"onenew{{firstname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidPU-1 PartialUpdateBooking отсутствует токен",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidPU-2 PartialUpdateBooking неверный токен",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => pm.response.to.have.status(403));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token=1",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidPU-3 PartialUpdateBooking несуществующий id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 404', () => pm.response.to.have.status(404));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : \"new{{firstname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/3333",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"3333"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidPU-4 PartialUpdateBooking пустое тело",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"400 Bad Reques/200\", function () {\r",
+											"    pm.expect([400, 200]).to.include(pm.response.code); \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidPU-5 PartialUpdateBooking неверный формат данных",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 400', () => pm.response.to.have.status(400));\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\" : null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "PBidD-1 DeleteBooking удаление с валидным токеном",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 204', () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PBidD-2 DeleteBooking повторное удаление с валидным токеном (идемпотентность)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NBidD-1 DeleteBooking удаление без токена",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status is 403', () => {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "token={{token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/booking/{{bookingid}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"booking",
+										"{{bookingid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "password123",
+			"type": "string"
+		}
+	]
+}
